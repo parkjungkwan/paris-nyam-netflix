@@ -1,0 +1,158 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    volumes:
+      - ./mysql/nyamnyam/etc/mysql/conf.d:/etc/mysql/conf.d:ro
+      - ./mysql/nyamnyam/var/lib/mysql:/var/lib/mysql
+      - ./mysql/nyamnyam/var/log/mysql:/var/log/mysql
+    environment:
+      - MYSQL_DATABASE=nyamnyamdb
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_ROOT_HOST=%
+    command: [ '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+    ports:
+      - "3306:3306"
+    restart: always
+
+  mongodb:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongodb:/data/nyamnyamdb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+      - MONGO_INITDB_DATABASE=nyamnyamdb
+    restart: always
+
+  eureka:
+    hostname: eureka
+    build:
+      context: ./server/eureka-server
+      dockerfile: Dockerfile
+    image: pakjkwan/nyamnyam-eureka-server:latest
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - nyamnyam-kr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sS http://localhost:8761/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  gateway:
+    hostname: gateway-server
+    build:
+      context: ./server/gateway-server
+      dockerfile: Dockerfile
+    image: pakjkwan/nyamnyam-gateway-server:latest
+    container_name: gateway-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      eureka:
+        condition: service_healthy
+    networks:
+      - nyamnyam-kr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sS http://localhost:8000/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+
+  admin:
+    hostname: admin-service
+    build:
+      context: ./service/admin-service
+      dockerfile: Dockerfile
+    image: pakjkwan/nyamnyam-admin-service:latest
+    container_name: admin-service
+    ports:
+      - "8001:8001"
+    depends_on:
+      gateway:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    networks:
+      - nyamnyam-kr
+
+  chat:
+    hostname: chat-service
+    build:
+      context: ./service/chat-service
+      dockerfile: Dockerfile
+    image: pakjkwan/nyamnyam-chat-service:latest
+    container_name: chat-service
+    ports:
+      - "8002:8002"
+    depends_on:
+      gateway:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    networks:
+      - nyamnyam-kr
+
+  post:
+    hostname: post-service
+    build:
+      context: ./service/post-service
+      dockerfile: Dockerfile
+    image: pakjkwan/nyamnyam-post-service:latest
+    container_name: post-service
+    ports:
+      - "8003:8003"
+    depends_on:
+      gateway:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    networks:
+      - nyamnyam-kr
+
+  restaurant:
+    hostname: restaurant-service
+    build:
+      context: ./service/restaurant-service
+      dockerfile: Dockerfile
+    image: pakjkwan/nyamnyam-restaurant-service:latest
+    container_name: restaurant-service
+    ports:
+      - "8004:8004"
+    depends_on:
+      gateway:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    networks:
+      - nyamnyam-kr
+
+
+  user:
+    hostname: user-service
+    build:
+      context: ./service/user-service
+      dockerfile: Dockerfile
+    image: pakjkwan/nyamnyam-user-service:latest
+    container_name: user-service
+    ports:
+      - "8005:8005"
+    depends_on:
+      gateway:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    networks:
+      - nyamnyam-kr
+
+networks:
+  nyamnyam-kr:  # 네트워크 정의 추가
+    driver: bridge  # 필요한 경우 드라이버 지정
+

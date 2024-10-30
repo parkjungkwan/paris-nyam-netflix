@@ -1,0 +1,34 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        encrypt:
+          enabled: false
+        native:
+          search-locations: classpath:/secret-server
+        git:
+          uri: https://github.com/parkjungkwan/nyamnyam-secret-server.git
+          default-label: main
+          username: '{cipher}b1134c8b57c79d5fa19c6d6d32fc82f7697cc763866b8c0d42337cbdb4f16e3f28836c62ce1d3696979f109ca75ed1d5' # 암호화된 username
+          password: '{cipher}42ab9480a3eeafe70e10a3b4b788795a1894c57403bf36968dd154beb023fd65e9f21f3ea35f0a86d364a1783fcb8f2db19ee3df6316e125cb3e68cc94e16c63' # 암호화된 Personal Access Token
+          search-paths: secret-server/prod
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show_details: always
+encrypt:
+  key: my-secret
+
