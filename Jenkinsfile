@@ -5,7 +5,7 @@ pipeline {
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
         PATH = "${env.PATH}:${JAVA_HOME}/bin"
         DOCKER_CREDENTIALS_ID = 'pakjkwan'
-        DOCKER_IMAGE_PREFIX = 'pakjkwan/paris-nyam-config'
+        DOCKER_IMAGE_PREFIX = 'pakjkwan/paris-nyam'
          services = "server/config-server,server/eureka-server,server/gateway-server,service/admin-service,service/chat-service,service/post-service,service/restaurant-service,service/user-service"
          DOCKERHUB_CREDENTIALS = credentials('docker_hub_Id')
           KUBECONFIG_CREDENTIALS_ID = 'kubeconfig'
@@ -84,7 +84,7 @@ pipeline {
                     steps {
                         script {
                             dir('nyamnyam.kr') {
-                                sh "cd server/config-server && docker build -t ${DOCKER_CREDENTIALS_ID}/nyamnyam-config-server:latest ."
+                                sh "cd server/config-server && docker build -t ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-config-server:latest ."
                             }
 
                             dir('nyamnyam.kr') {
@@ -110,7 +110,7 @@ pipeline {
                     servicesList.each { service ->
                                             def serviceName = service.split('/')[1] // 서비스 이름 추출
                                             // 각 서비스의 Docker 이미지를 푸시
-                                            sh "docker push ${DOCKER_CREDENTIALS_ID}/paris-nyam-${serviceName}:latest"
+                                            sh "docker push ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}-service:latest"
                     }
                 }
             }
@@ -124,7 +124,7 @@ pipeline {
                             def servicesList = env.services.split(',')
                             servicesList.each { service ->
                                 def serviceName = service.split('/')[1] // 서비스 이름 추출
-                                sh "docker rmi ${DOCKER_CREDENTIALS_ID}/paris-nyam-${serviceName}:latest" // Clean up the pushed image
+                                sh "docker rmi ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}:latest" // Clean up the pushed image
                             }
                         }
                     }
