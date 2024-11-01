@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'pakjkwan'
-        DOCKER_IMAGE_PREFIX = 'pakjkwan/nyamnyam-config-server'
+        DOCKER_IMAGE_PREFIX = 'pakjkwan/paris-nyam-config'
          services = "server/config-server,server/eureka-server,server/gateway-server,service/admin-service,service/chat-service,service/post-service,service/restaurant-service,service/user-service"
          DOCKERHUB_CREDENTIALS = credentials('docker_hub_Id')
           KUBECONFIG_CREDENTIALS_ID = 'kubeconfig'
@@ -98,7 +98,7 @@ pipeline {
                     servicesList.each { service ->
                                             def serviceName = service.split('/')[1] // 서비스 이름 추출
                                             // 각 서비스의 Docker 이미지를 푸시
-                                            sh "docker push ${DOCKER_CREDENTIALS_ID}/nyamnyam-${serviceName}:latest"
+                                            sh "docker push ${DOCKER_CREDENTIALS_ID}/paris-nyam-${serviceName}:latest"
                     }
                 }
             }
@@ -112,7 +112,7 @@ pipeline {
                             def servicesList = env.services.split(',')
                             servicesList.each { service ->
                                 def serviceName = service.split('/')[1] // 서비스 이름 추출
-                                sh "docker rmi ${DOCKER_CREDENTIALS_ID}/nyamnyam-${serviceName}:latest" // Clean up the pushed image
+                                sh "docker rmi ${DOCKER_CREDENTIALS_ID}/paris-nyam-${serviceName}:latest" // Clean up the pushed image
                             }
                         }
                     }
@@ -123,7 +123,7 @@ pipeline {
                         script {
                             withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                                 sh '''
-                                kubectl apply -f nyamnyam.kr/deploy/namespace/nyamnyam-namespace.yaml --kubeconfig=$KUBECONFIG
+                                kubectl apply -f nyamnyam.kr/deploy/namespace/paris-nyam-namespace.yaml --kubeconfig=$KUBECONFIG
                                 '''
                             }
                         }
