@@ -24,6 +24,7 @@ public class TagEntity {
 
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     @JsonIgnore
+    @Builder.Default
     private List<PostTagEntity> postTags = new ArrayList<>();
 
     public TagEntity(String name, TagCategory tagCategory) {

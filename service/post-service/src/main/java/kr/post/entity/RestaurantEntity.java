@@ -37,6 +37,7 @@ public class RestaurantEntity {
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
+    @Builder.Default
     private List<PostEntity> posts = new ArrayList<>();
 
 }
