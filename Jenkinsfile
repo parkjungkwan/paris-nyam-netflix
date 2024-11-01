@@ -37,15 +37,15 @@ pipeline {
                     sh 'pwd'
 
                     dir('nyamnyam.kr/deploy') {
-                        git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-deploy.git', credentialsId: 'github-token'
+                        git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-deploy-server.git', credentialsId: 'github-token'
                     }
 
                     dir('nyamnyam.kr/server/config-server') {
-                        git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-config.git', credentialsId: 'github-token'
+                        git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-config-server.git', credentialsId: 'github-token'
                     }
 
                     dir('nyamnyam.kr/server/config-server/src/main/resources/secret-server') {
-                        git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-secrets.git', credentialsId: 'github-token'
+                        git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-secret-server.git', credentialsId: 'github-token'
                     }
                 }
             }
@@ -107,8 +107,9 @@ pipeline {
                 script {
                     def servicesList = env.services.split(',')
                     servicesList.each { service ->
-                        def serviceName = service.split('/')[1]
-                        sh "docker push ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}-service:latest"
+                        def serviceName = service.split('-')[0]
+                        def serviceType = service.split('-')[1]
+                        sh "docker push ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}-${serviceType}:latest"
                     }
                 }
             }
@@ -120,7 +121,7 @@ pipeline {
                     def servicesList = env.services.split(',')
                     servicesList.each { service ->
                         def serviceName = service.split('/')[1]
-                        sh "docker rmi ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}:latest"
+                        sh "docker rmi ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}-${serviceType}:latest"
                     }
                 }
             }
