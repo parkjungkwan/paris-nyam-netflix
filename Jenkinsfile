@@ -107,8 +107,9 @@ pipeline {
                 script {
                     def servicesList = env.services.split(',')
                     servicesList.each { service ->
-                        def serviceName = service.split('-')[0]
-                        def serviceType = service.split('-')[1]
+                        def serviceName = service.split('/')[1]
+                        def name = serviceName.split('-')[0]
+                        def type = serviceName.split('-')[1]
                         sh "docker push ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}-${serviceType}:latest"
                     }
                 }
