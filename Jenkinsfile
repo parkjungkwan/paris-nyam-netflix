@@ -5,7 +5,7 @@ pipeline {
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
         PATH = "${env.PATH}:${JAVA_HOME}/bin"
         DOCKER_CREDENTIALS_ID = 'pakjkwan'
-        DOCKER_IMAGE_PREFIX = 'pakjkwan/paris-nyam'
+        DOCKER_IMAGE_PREFIX = 'paris-nyam'
         services = "server/config-server,server/eureka-server,server/gateway-server,service/admin-service,service/chat-service,service/post-service,service/restaurant-service,service/user-service"
         DOCKERHUB_CREDENTIALS = credentials('docker_hub_Id')
         KUBECONFIG_CREDENTIALS_ID = 'kubeconfig'
