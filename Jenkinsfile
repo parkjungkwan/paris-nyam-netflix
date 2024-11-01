@@ -130,6 +130,20 @@ pipeline {
             }
         }
 
+        stage('Create Namespace') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                        sh '''
+                            export NCP_ACCESS_KEY=$NCP_API_KEY
+                            export NCP_SECRET_KEY=$NCP_SECRET_KEY
+                            kubectl apply -f nyamnyam.kr/deploy/namespace/paris-nyam-namespace.yaml --kubeconfig=$KUBECONFIG
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Verify KUBECONFIG') {
             steps {
                 script {
@@ -141,18 +155,6 @@ pipeline {
                             cat $KUBECONFIG
                             # kubectl 명령어로 접속 테스트
                             kubectl get nodes --kubeconfig=$KUBECONFIG --insecure-skip-tls-verify
-                        '''
-                    }
-                }
-            }
-        }
-
-        stage('Create Namespace') {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                        sh '''
-                            kubectl apply -f nyamnyam.kr/deploy/namespace/paris-nyam-namespace.yaml --kubeconfig=$KUBECONFIG
                         '''
                     }
                 }
