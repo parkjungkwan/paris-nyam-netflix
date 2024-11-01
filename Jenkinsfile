@@ -92,6 +92,11 @@ pipeline {
                             }
                         }
                     }
+                    stage('Docker Push') {
+                        steps {
+                            sh "docker push ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-config-server:latest"
+                        }
+                    }
         }
 
         stage('Login to Docker Hub') {
