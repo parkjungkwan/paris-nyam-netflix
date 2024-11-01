@@ -9,7 +9,7 @@ pipeline {
         services = "server/config-server,server/eureka-server,server/gateway-server,service/admin-service,service/chat-service,service/post-service,service/restaurant-service,service/user-service"
         DOCKERHUB_CREDENTIALS = credentials('docker_hub_Id')
         KUBECONFIG_CREDENTIALS_ID = 'kubeconfig'
-        NCP_API_KEY = credentials('ncloud-api-key')
+        NCP_ACCESS_KEY = credentials('ncloud-api-key')
         NCP_SECRET_KEY = credentials('ncloud-secret-key')
     }
 
@@ -129,21 +129,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Create Namespace') {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                        sh '''
-                            export NCP_ACCESS_KEY=$NCP_API_KEY
-                            export NCP_SECRET_KEY=$NCP_SECRET_KEY
-                            kubectl apply -f nyamnyam.kr/deploy/namespace/paris-nyam-namespace.yaml --kubeconfig=$KUBECONFIG
-                        '''
-                    }
-                }
-            }
-        }
-
         stage('Verify KUBECONFIG') {
             steps {
                 script {
@@ -160,6 +145,22 @@ pipeline {
                 }
             }
         }
+
+        stage('Create Namespace') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                        sh '''
+                            export NCP_ACCESS_KEY=$NCP_ACCESS_KEY
+                            export NCP_SECRET_KEY=$NCP_SECRET_KEY
+                            kubectl apply -f nyamnyam.kr/deploy/namespace/paris-nyam-namespace.yaml --kubeconfig=$KUBECONFIG
+                        '''
+                    }
+                }
+            }
+        }
+
+        
 
         stage('Create ConfigMap') {
             steps {
