@@ -4,6 +4,7 @@ pipeline {
     tools {jdk 'jdk17'}
 
     environment {
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
         DOCKER_CREDENTIALS_ID = 'pakjkwan'
         DOCKER_IMAGE_PREFIX = 'pakjkwan/paris-nyam-config'
          services = "server/config-server,server/eureka-server,server/gateway-server,service/admin-service,service/chat-service,service/post-service,service/restaurant-service,service/user-service"
@@ -12,6 +13,14 @@ pipeline {
           NCP_API_KEY = credentials('ncloud-api-key')
           NCP_SECRET_KEY = credentials('ncloud-secret-key')
 
+    }
+    stages {
+        stage('Check JAVA_HOME') {
+            steps {
+                sh 'echo $JAVA_HOME'
+                sh '$JAVA_HOME/bin/java -version'
+            }
+        }
     }
 
     stages {
