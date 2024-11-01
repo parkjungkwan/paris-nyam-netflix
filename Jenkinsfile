@@ -84,7 +84,7 @@ pipeline {
             }
         }
 
-        stage('Docker Push') {
+        stage('Docker Push Config Server') {
             steps {
                 script {
                     dir('nyamnyam.kr') {
@@ -102,7 +102,7 @@ pipeline {
             }
         }
 
-        stage('Docker Push') {
+        stage('Docker Push Services') {
             steps {
                 script {
                     def servicesList = env.services.split(',')
