@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'alrk'
-        DOCKER_IMAGE_PREFIX = 'alrk/nyam-config-server'
+        DOCKER_CREDENTIALS_ID = 'pakjkwan'
+        DOCKER_IMAGE_PREFIX = 'pakjkwan/nyamnyam-config-server'
          services = "server/config-server,server/eureka-server,server/gateway-server,service/admin-service,service/chat-service,service/post-service,service/restaurant-service,service/user-service"
          DOCKERHUB_CREDENTIALS = credentials('docker_hub_Id')
           KUBECONFIG_CREDENTIALS_ID = 'kubeconfig'
@@ -28,15 +28,15 @@ pipeline {
                                 sh 'pwd'
 
                                 dir('nyamnyam.kr/deploy') {
-                                    git branch: 'main', url: 'https://github.com/parkjungkwan/nyamnyam-deploy.git', credentialsId: 'github_nyamnyam_access_token'
+                                    git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-deploy.git', credentialsId: 'github-token'
                                 }
 
                                 dir('nyamnyam.kr/server/config-server') {
-                                    git branch: 'main', url: 'https://github.com/parkjungkwan/nyamnyam-config-server.git', credentialsId: 'github_nyamnyam_access_token'
+                                    git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-config.git', credentialsId: 'github-token'
                                 }
 
                                 dir ('nyamnyam.kr/server/config-server/src/main/resources/secret-server') {
-                                    git branch: 'main', url: 'https://github.com/parkjungkwan/nyamnyam-secret-server.git', credentialsId: 'github_nyamnyam_access_token'
+                                    git branch: 'main', url: 'https://github.com/parkjungkwan/paris-nyam-secrets.git', credentialsId: 'github-token'
 
                                 }
                             }
