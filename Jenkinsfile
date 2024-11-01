@@ -110,7 +110,7 @@ pipeline {
                         def serviceName = service.split('/')[1]
                         def name = serviceName.split('-')[0]
                         def type = serviceName.split('-')[1]
-                        sh "docker push ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}-${serviceType}:latest"
+                        sh "docker push ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${name}-${type}:latest"
                     }
                 }
             }
@@ -122,7 +122,9 @@ pipeline {
                     def servicesList = env.services.split(',')
                     servicesList.each { service ->
                         def serviceName = service.split('/')[1]
-                        sh "docker rmi ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${serviceName}-${serviceType}:latest"
+                        def name = serviceName.split('-')[0]
+                        def type = serviceName.split('-')[1]
+                        sh "docker rmi ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_PREFIX}-${name}-${type}:latest"
                     }
                 }
             }
