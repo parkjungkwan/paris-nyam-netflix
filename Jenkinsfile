@@ -57,6 +57,9 @@ pipeline {
                    steps {
                        script {
                            // 각 서버에 대해 gradlew를 실행
+                            dir('nyamnyam.kr/server/config-server') {
+                                    sh './gradlew clean bootJar'
+                                }
                            dir('nyamnyam.kr') {
                                sh 'chmod +x gradlew' // gradlew에 실행 권한 부여
 
