@@ -14,6 +14,7 @@ pipeline {
           NCP_SECRET_KEY = credentials('ncloud-secret-key')
 
     }
+
     stages {
         stage('Check JAVA_HOME') {
             steps {
@@ -21,9 +22,6 @@ pipeline {
                 sh '$JAVA_HOME/bin/java -version'
             }
         }
-    }
-
-    stages {
             stage('Checkout SCM') {
                 steps {
                     script {
