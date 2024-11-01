@@ -1,8 +1,6 @@
 pipeline {
     agent any
 
-    tools {jdk 'jdk17'}
-
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
         DOCKER_CREDENTIALS_ID = 'pakjkwan'
