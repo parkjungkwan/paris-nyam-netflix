@@ -1,6 +1,8 @@
 pipeline {
     agent any
 
+    tools {jdk 'jdk17'}
+
     environment {
         DOCKER_CREDENTIALS_ID = 'pakjkwan'
         DOCKER_IMAGE_PREFIX = 'pakjkwan/paris-nyam-config'
