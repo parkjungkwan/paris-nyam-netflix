@@ -130,6 +130,23 @@ pipeline {
             }
         }
 
+        stage('Verify KUBECONFIG') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                        sh '''
+                            # KUBECONFIG 경로 출력
+                            echo "KUBECONFIG path: $KUBECONFIG"
+                            # KUBECONFIG 내용 출력 (테스트용)
+                            cat $KUBECONFIG
+                            # kubectl 명령어로 접속 테스트
+                            kubectl get nodes --kubeconfig=$KUBECONFIG --insecure-skip-tls-verify
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Create Namespace') {
             steps {
                 script {
