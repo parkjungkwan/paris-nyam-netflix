@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-        PATH = "${env.PATH}:${JAVA_HOME}/bin"
+        PATH = "${env.PATH}:${JAVA_HOME}/bin:${env.PATH}"
         DOCKER_CREDENTIALS_ID = 'pakjkwan'
         DOCKER_IMAGE_PREFIX = 'paris-nyam'
         services = "server/config-server,server/eureka-server,server/gateway-server,service/admin-service,service/chat-service,service/post-service,service/restaurant-service,service/user-service"
@@ -134,11 +134,11 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                         sh '''
-                            # KUBECONFIG 경로 출력
+                            echo "##### KUBECONFIG 경로 출력 #####"
                             echo "KUBECONFIG path: $KUBECONFIG"
-                            # KUBECONFIG 내용 출력 (테스트용)
+                            echo "##### KUBECONFIG 내용 출력 (테스트용) #####"
                             cat $KUBECONFIG
-                            # kubectl 명령어로 접속 테스트
+                            echo ""##### kubectl 명령어로 접속 테스트 #####"
                             kubectl get nodes --kubeconfig=$KUBECONFIG --insecure-skip-tls-verify
                         '''
                     }
